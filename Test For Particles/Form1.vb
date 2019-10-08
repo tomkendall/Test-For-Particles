@@ -40,8 +40,8 @@ Public Class Form1
         If NumberOfParticles < 1000 Then
             NumberOfParticles += 1
 
-            YVelocity(NumberOfParticles) = CInt(Math.Ceiling(Rnd() * 10))
-            XVelocity(NumberOfParticles) = CInt(Math.Ceiling(Rnd() * 10))
+            YVelocity(NumberOfParticles) = CInt(Math.Ceiling(Rnd() * 1))
+            XVelocity(NumberOfParticles) = CInt(Math.Ceiling(Rnd() * 1))
 
             ParticleCoord(NumberOfParticles, 0) = CInt(Math.Ceiling(Rnd() * (WindowWidth - ParticleSize)))
             ParticleCoord(NumberOfParticles, 1) = CInt(Math.Ceiling(Rnd() * (WindowHeight - ParticleSize)))
@@ -143,22 +143,30 @@ Public Class Form1
         Next
 
         ''''''''''''''''''''''''''''''''''' COLLISION DETECTOR - Stops two particles if collision detected ''''''''''''''''''''''''''''
-        Dim Evaluator1 = New System.Threading.Thread(Sub() CollisionDetector(1, (NumberOfParticles / 4)))
-        Dim Evaluator2 = New System.Threading.Thread(Sub() CollisionDetector((NumberOfParticles / 4), (NumberOfParticles / 2)))
-        Dim Evaluator3 = New System.Threading.Thread(Sub() CollisionDetector((NumberOfParticles / 2), ((NumberOfParticles / 2) + (NumberOfParticles / 4))))
-        Dim Evaluator4 = New System.Threading.Thread(Sub() CollisionDetector(((NumberOfParticles / 2) + (NumberOfParticles / 4)), NumberOfParticles))
-
-        Evaluator1.Start()
-        Evaluator2.Start()
-        Evaluator3.Start()
-        Evaluator4.Start()
 
 
-        Evaluator1.Join()
-        Evaluator2.Join()
-        Evaluator3.Join()
-        Evaluator4.Join()
+        If Collisions = True Then
+            For i = 1 To NumberOfParticles
+                For j = 1 To (NumberOfParticles - i)
+                    If (ParticleCoord((i + j), 0) - ParticleCoord(i, 0)) ^ 2 + (ParticleCoord(i, 1) - ParticleCoord((i + j), 1)) ^ 2 <= ((ParticleSize / 2) + (ParticleSize / 2)) ^ 2 Then
+                        Dim CentrePointI() As Integer = {(ParticleCoord(i, 0) + (ParticleSize / 2)), (ParticleCoord(i, 1) + (ParticleSize / 2))}
+                        Dim CentrePointJ() As Integer = {(ParticleCoord(i + j, 0) + (ParticleSize / 2)), (ParticleCoord(i + j, 1) + (ParticleSize / 2))}
+                        Dim DrawPointI As New Point(CentrePointI(0), CentrePointI(1))
+                        Dim DrawPointJ As New Point(CentrePointJ(0), CentrePointJ(1))
+                        Dim CentrePoints As Point() = {DrawPointI, DrawPointJ}
+                        Running = False
+                        e.Graphics.DrawPolygon(RedPen, CentrePoints)
 
+                        Dim Distance As Integer = Math.Sqrt(((CentrePointJ(0) - CentrePointI(0)) ^ 2) + ((CentrePointJ(1) - CentrePointI(1)) ^ 2))
+                        Console.WriteLine(Distance.ToString)
+
+                        ' Dim CentreWall() As Integer = ()
+
+
+                    End If
+                Next
+            Next
+        End If
 
     End Sub
 
@@ -226,32 +234,6 @@ Public Class Form1
             Collisions = True
         Else
             Collisions = False
-        End If
-    End Sub
-
-    Sub CollisionDetector(Starter As Integer, Ender As Integer)
-
-        If Collisions = True Then
-            For i = Starter To (Ender / 2)
-                For j = Starter To ((Ender / 2) - i)
-                    If (ParticleCoord((i + j), 0) - ParticleCoord(i, 0)) ^ 2 + (ParticleCoord(i, 1) - ParticleCoord((i + j), 1)) ^ 2 <= ((ParticleSize / 2) + (ParticleSize / 2)) ^ 2 Then
-                        Dim CentrePointI() As Integer = {(ParticleCoord(i, 0) + (ParticleSize / 2)), (ParticleCoord(i, 1) + (ParticleSize / 2))}
-                        Dim CentrePointJ() As Integer = {(ParticleCoord(i + j, 0) + (ParticleSize / 2)), (ParticleCoord(i + j, 1) + (ParticleSize / 2))}
-                        Dim DrawPointI As New Point(CentrePointI(0), CentrePointI(1))
-                        Dim DrawPointJ As New Point(CentrePointJ(0), CentrePointJ(1))
-                        Dim CentrePoints As Point() = {DrawPointI, DrawPointJ}
-                        Timer.Enabled = False
-                        'e.Graphics.DrawPolygon(RedPen, CentrePoints)
-
-                        Dim Distance As Integer = Math.Sqrt(((CentrePointJ(0) - CentrePointI(0)) ^ 2) + ((CentrePointJ(1) - CentrePointI(1)) ^ 2))
-                        'Console.WriteLine(Distance.ToString)
-
-                        ' Dim CentreWall() As Integer = ()
-
-
-                    End If
-                Next
-            Next
         End If
     End Sub
 
