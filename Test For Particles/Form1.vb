@@ -159,28 +159,6 @@ Public Class Form1
         Evaluator3.Join()
         Evaluator4.Join()
 
-        'If Collisions = True Then
-        '    For i = 1 To NumberOfParticles
-        '        For j = 1 To (NumberOfParticles - i)
-        '            If (ParticleCoord((i + j), 0) - ParticleCoord(i, 0)) ^ 2 + (ParticleCoord(i, 1) - ParticleCoord((i + j), 1)) ^ 2 <= ((ParticleSize / 2) + (ParticleSize / 2)) ^ 2 Then
-        '                Dim CentrePointI() As Integer = {(ParticleCoord(i, 0) + (ParticleSize / 2)), (ParticleCoord(i, 1) + (ParticleSize / 2))}
-        '                Dim CentrePointJ() As Integer = {(ParticleCoord(i + j, 0) + (ParticleSize / 2)), (ParticleCoord(i + j, 1) + (ParticleSize / 2))}
-        '                Dim DrawPointI As New Point(CentrePointI(0), CentrePointI(1))
-        '                Dim DrawPointJ As New Point(CentrePointJ(0), CentrePointJ(1))
-        '                Dim CentrePoints As Point() = {DrawPointI, DrawPointJ}
-        '                'Timer.Enabled = False
-        '                e.Graphics.DrawPolygon(RedPen, CentrePoints)
-
-        '                Dim Distance As Integer = Math.Sqrt(((CentrePointJ(0) - CentrePointI(0)) ^ 2) + ((CentrePointJ(1) - CentrePointI(1)) ^ 2))
-        '                Console.WriteLine(Distance.ToString)
-
-        '                ' Dim CentreWall() As Integer = ()
-
-
-        '            End If
-        '        Next
-        '    Next
-        'End If
 
     End Sub
 
@@ -262,7 +240,7 @@ Public Class Form1
                         Dim DrawPointI As New Point(CentrePointI(0), CentrePointI(1))
                         Dim DrawPointJ As New Point(CentrePointJ(0), CentrePointJ(1))
                         Dim CentrePoints As Point() = {DrawPointI, DrawPointJ}
-                        'Timer.Enabled = False
+                        Timer.Enabled = False
                         'e.Graphics.DrawPolygon(RedPen, CentrePoints)
 
                         Dim Distance As Integer = Math.Sqrt(((CentrePointJ(0) - CentrePointI(0)) ^ 2) + ((CentrePointJ(1) - CentrePointI(1)) ^ 2))
