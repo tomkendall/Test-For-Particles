@@ -77,7 +77,7 @@ Partial Class Form1
         Me.ParticleSizeBar.Name = "ParticleSizeBar"
         Me.ParticleSizeBar.Size = New System.Drawing.Size(463, 45)
         Me.ParticleSizeBar.TabIndex = 3
-        Me.ParticleSizeBar.Value = 26
+        Me.ParticleSizeBar.Value = 100
         '
         'ResetSizeButton
         '
@@ -158,6 +158,8 @@ Partial Class Form1
         '
         Me.CoordsCheckBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.CoordsCheckBox.AutoSize = True
+        Me.CoordsCheckBox.Checked = True
+        Me.CoordsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked
         Me.CoordsCheckBox.Location = New System.Drawing.Point(1102, 652)
         Me.CoordsCheckBox.Name = "CoordsCheckBox"
         Me.CoordsCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes
@@ -185,7 +187,7 @@ Partial Class Form1
         Me.FPSCounter.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.FPSCounter.AutoSize = True
         Me.FPSCounter.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.FPSCounter.Location = New System.Drawing.Point(1195, 505)
+        Me.FPSCounter.Location = New System.Drawing.Point(1188, 505)
         Me.FPSCounter.Name = "FPSCounter"
         Me.FPSCounter.Size = New System.Drawing.Size(48, 20)
         Me.FPSCounter.TabIndex = 13

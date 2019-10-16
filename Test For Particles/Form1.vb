@@ -8,7 +8,7 @@ Public Class Form1
     Public ParticleCoord(1000, 1) As Integer
     Public Blackbrush As New SolidBrush(Color.Black)
     Public Blackpen As New Pen(Color.Black, 1)
-    Public RedPen As New Pen(Color.Red, 1)
+    Public RedPen As New Pen(Color.Red, 4)
     Public GreenPen As New Pen(Color.Green, 2)
     Public NumberOfParticles As Integer
     Public ParticleSize As Integer
@@ -24,11 +24,7 @@ Public Class Form1
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        'AddParticle()
-
         Console.WriteLine(Me.Height.ToString)
-
-        'Blackpen.DashStyle = Drawing.Drawing2D.DashStyle.Dot
 
         stopWatch.Start()
 
@@ -48,6 +44,8 @@ Public Class Form1
 
             Console.WriteLine("Particle " + NumberOfParticles.ToString + " Speeds: XVelocity = " + XVelocity(NumberOfParticles).ToString + ", YVelocity = " + YVelocity(NumberOfParticles).ToString)
             Console.WriteLine("Particle " + NumberOfParticles.ToString + " Coordinates: (" + ParticleCoord(NumberOfParticles, 0).ToString + ", " + ParticleCoord(NumberOfParticles, 1).ToString + ")")
+            Console.WriteLine("Particle " + NumberOfParticles.ToString + " Angle: " + ((Math.Atan2(XVelocity(NumberOfParticles), -(YVelocity(NumberOfParticles)))) * (180 / Math.PI)).ToString)
+
         Else
             MessageBox.Show("Maximum Number of Particles Reached")
         End If
@@ -98,6 +96,8 @@ Public Class Form1
 
     Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
 
+
+
         e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
         WindowWidth = (Me.Width - 17)
         WindowHeight = (Me.Height - 220)
@@ -144,25 +144,45 @@ Public Class Form1
 
         ''''''''''''''''''''''''''''''''''' COLLISION DETECTOR - Stops two particles if collision detected ''''''''''''''''''''''''''''
 
-
         If Collisions = True Then
             For i = 1 To NumberOfParticles
                 For j = 1 To (NumberOfParticles - i)
                     If (ParticleCoord((i + j), 0) - ParticleCoord(i, 0)) ^ 2 + (ParticleCoord(i, 1) - ParticleCoord((i + j), 1)) ^ 2 <= ((ParticleSize / 2) + (ParticleSize / 2)) ^ 2 Then
-                        Dim CentrePointI() As Integer = {(ParticleCoord(i, 0) + (ParticleSize / 2)), (ParticleCoord(i, 1) + (ParticleSize / 2))}
-                        Dim CentrePointJ() As Integer = {(ParticleCoord(i + j, 0) + (ParticleSize / 2)), (ParticleCoord(i + j, 1) + (ParticleSize / 2))}
-                        Dim DrawPointI As New Point(CentrePointI(0), CentrePointI(1))
-                        Dim DrawPointJ As New Point(CentrePointJ(0), CentrePointJ(1))
-                        Dim CentrePoints As Point() = {DrawPointI, DrawPointJ}
-                        Running = False
-                        e.Graphics.DrawPolygon(RedPen, CentrePoints)
+                        Dim CentrePointParticleI() As Integer = {(ParticleCoord(i, 0) + (ParticleSize / 2)), (ParticleCoord(i, 1) + (ParticleSize / 2))}
+                        Dim CentrePointParticleJ() As Integer = {(ParticleCoord(i + j, 0) + (ParticleSize / 2)), (ParticleCoord(i + j, 1) + (ParticleSize / 2))}
+                        Dim DrawPointI As New Point(CentrePointParticleI(0), CentrePointParticleI(1))
+                        Dim DrawPointJ As New Point(CentrePointParticleJ(0), CentrePointParticleJ(1))
+                        Dim LineBetween As Point() = {DrawPointI, DrawPointJ}
+                        Timer.Enabled = False
+                        Timer2.Enabled = False
+                        'e.Graphics.DrawPolygon(RedPen, LineBetween)
 
-                        Dim Distance As Integer = Math.Sqrt(((CentrePointJ(0) - CentrePointI(0)) ^ 2) + ((CentrePointJ(1) - CentrePointI(1)) ^ 2))
-                        Console.WriteLine(Distance.ToString)
+                        Dim Distance As Integer = Math.Sqrt(((CentrePointParticleJ(0) - CentrePointParticleI(0)) ^ 2) + ((CentrePointParticleJ(1) - CentrePointParticleI(1)) ^ 2))
+                        Console.WriteLine("Distance: " + Distance.ToString)
 
-                        ' Dim CentreWall() As Integer = ()
+                        Distance = 100
+
+                        Dim Angle1 As Double = Math.Atan((CentrePointParticleJ(1) - CentrePointParticleI(1)) / (CentrePointParticleJ(0) - CentrePointParticleI(0)))
+                        If Angle1 < 0 Then
+                            Angle1 = Angle1 * -1
+                        End If
+                        Console.WriteLine("Angle: " + (Angle1 * (180 / System.Math.PI)).ToString)
+
+                        Dim CollisionPoint(1) As Integer
+
+                        CollisionPoint(0) = ((ParticleSize / 2) * Math.Cos(Angle1))
+                        CollisionPoint(1) = ((ParticleSize / 2) * Math.Sin(Angle1))
+
+                        Console.WriteLine("Collision Point: " + CollisionPoint(0).ToString + ", " + CollisionPoint(1).ToString)
+
+                        e.Graphics.DrawEllipse(RedPen, (CentrePointParticleJ(0) + CollisionPoint(0)), (CentrePointParticleJ(1) - CollisionPoint(1)), 1, 1)
 
 
+                        Dim CentreWallX() As Integer = {,}
+                        Dim CentreWallY() As Integer = {,}
+
+                        Exit For
+                        Exit For
                     End If
                 Next
             Next
@@ -244,4 +264,6 @@ Public Class Form1
 
         Frames += 1
     End Sub
+
+
 End Class
