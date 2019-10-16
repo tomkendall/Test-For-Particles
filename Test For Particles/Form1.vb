@@ -177,10 +177,6 @@ Public Class Form1
 
                         e.Graphics.DrawEllipse(RedPen, (CentrePointParticleJ(0) + CollisionPoint(0)), (CentrePointParticleJ(1) - CollisionPoint(1)), 1, 1)
 
-
-                        Dim CentreWallX() As Integer = {,}
-                        Dim CentreWallY() As Integer = {,}
-
                         Exit For
                         Exit For
                     End If
