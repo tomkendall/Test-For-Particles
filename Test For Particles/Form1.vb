@@ -2,13 +2,15 @@
 
 Public Class Form1
 
-
     Public XVelocity(1000) As Integer
     Public YVelocity(1000) As Integer
     Public ParticleCoord(1000, 1) As Integer
     Public Blackbrush As New SolidBrush(Color.Black)
     Public Blackpen As New Pen(Color.Black, 1)
     Public RedPen As New Pen(Color.Red, 4)
+    Public PinkPen As New Pen(Color.Pink, 4)
+    Public BluePen As New Pen(Color.Blue, 4)
+    Public PurplePen As New Pen(Color.Purple, 4)
     Public GreenPen As New Pen(Color.Green, 2)
     Public NumberOfParticles As Integer
     Public ParticleSize As Integer
@@ -24,8 +26,6 @@ Public Class Form1
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        Console.WriteLine(Me.Height.ToString)
-
         stopWatch.Start()
 
     End Sub
@@ -39,12 +39,14 @@ Public Class Form1
             YVelocity(NumberOfParticles) = CInt(Math.Ceiling(Rnd() * 1))
             XVelocity(NumberOfParticles) = CInt(Math.Ceiling(Rnd() * 1))
 
+            'Console.WriteLine(YVelocity.ToString + ", X: " + XVelocity.ToString)
+
             ParticleCoord(NumberOfParticles, 0) = CInt(Math.Ceiling(Rnd() * (WindowWidth - ParticleSize)))
             ParticleCoord(NumberOfParticles, 1) = CInt(Math.Ceiling(Rnd() * (WindowHeight - ParticleSize)))
 
-            Console.WriteLine("Particle " + NumberOfParticles.ToString + " Speeds: XVelocity = " + XVelocity(NumberOfParticles).ToString + ", YVelocity = " + YVelocity(NumberOfParticles).ToString)
-            Console.WriteLine("Particle " + NumberOfParticles.ToString + " Coordinates: (" + ParticleCoord(NumberOfParticles, 0).ToString + ", " + ParticleCoord(NumberOfParticles, 1).ToString + ")")
-            Console.WriteLine("Particle " + NumberOfParticles.ToString + " Angle: " + ((Math.Atan2(XVelocity(NumberOfParticles), -(YVelocity(NumberOfParticles)))) * (180 / Math.PI)).ToString)
+            'Console.WriteLine("Particle " + NumberOfParticles.ToString + " Speeds: XVelocity = " + XVelocity(NumberOfParticles).ToString + ", YVelocity = " + YVelocity(NumberOfParticles).ToString)
+            'Console.WriteLine("Particle " + NumberOfParticles.ToString + " Coordinates: (" + ParticleCoord(NumberOfParticles, 0).ToString + ", " + ParticleCoord(NumberOfParticles, 1).ToString + ")")
+            'Console.WriteLine("Particle " + NumberOfParticles.ToString + " Angle: " + ((Math.Atan2(XVelocity(NumberOfParticles), -(YVelocity(NumberOfParticles)))) * (180 / Math.PI)).ToString)
 
         Else
             MessageBox.Show("Maximum Number of Particles Reached")
@@ -115,6 +117,7 @@ Public Class Form1
                     Dim DrawPointJ As New Point(((ParticleCoord(i, 0) + (ParticleSize / 2)) + (XVelocity(i) * 4)), ((ParticleCoord(i, 1) + (ParticleSize / 2)) + (YVelocity(i) * 4)))
                     Dim CentrePoints As Point() = {DrawPointI, DrawPointJ}
                     e.Graphics.DrawPolygon(GreenPen, CentrePoints)
+                    e.Graphics.DrawString("X = " + XVelocity(i).ToString + ", Y = " + YVelocity(i).ToString, New Font("Tahoma", 7), Brushes.Black, New Point((ParticleCoord(i, 0) + (ParticleSize / 2) - 28), (ParticleCoord(i, 1) + (ParticleSize + 10))))
                 End If
             ElseIf ParticleCoord(i, 0) < (WindowWidth - ParticleSize) And ParticleCoord(i, 0) > 0 Then
                 YVelocity(i) = -YVelocity(i)
@@ -138,8 +141,9 @@ Public Class Form1
                 YVelocity(i) = -YVelocity(i)
                 XVelocity(i) = -XVelocity(i)
                 ParticleCoord(i, 0) = ParticleCoord(i, 0) + XVelocity(i)
-                ParticleCoord(i, 1) = ParticleCoord(i, 1) + YVelocity(i)
+                ParticleCoord(i, 1) = ParticleCoord(i, 1) + YVelocity(i) 
             End If
+
         Next
 
         ''''''''''''''''''''''''''''''''''' COLLISION DETECTOR - Stops two particles if collision detected ''''''''''''''''''''''''''''
@@ -150,36 +154,51 @@ Public Class Form1
                     If (ParticleCoord((i + j), 0) - ParticleCoord(i, 0)) ^ 2 + (ParticleCoord(i, 1) - ParticleCoord((i + j), 1)) ^ 2 <= ((ParticleSize / 2) + (ParticleSize / 2)) ^ 2 Then
                         Dim CentrePointParticleI() As Integer = {(ParticleCoord(i, 0) + (ParticleSize / 2)), (ParticleCoord(i, 1) + (ParticleSize / 2))}
                         Dim CentrePointParticleJ() As Integer = {(ParticleCoord(i + j, 0) + (ParticleSize / 2)), (ParticleCoord(i + j, 1) + (ParticleSize / 2))}
-                        Dim DrawPointI As New Point(CentrePointParticleI(0), CentrePointParticleI(1))
-                        Dim DrawPointJ As New Point(CentrePointParticleJ(0), CentrePointParticleJ(1))
-                        Dim LineBetween As Point() = {DrawPointI, DrawPointJ}
                         Timer.Enabled = False
                         Timer2.Enabled = False
-                        'e.Graphics.DrawPolygon(RedPen, LineBetween)
 
-                        Dim Distance As Integer = Math.Sqrt(((CentrePointParticleJ(0) - CentrePointParticleI(0)) ^ 2) + ((CentrePointParticleJ(1) - CentrePointParticleI(1)) ^ 2))
-                        Console.WriteLine("Distance: " + Distance.ToString)
+                        Dim Distance As Integer = 100
 
-                        Distance = 100
-
-                        Dim Angle1 As Double = Math.Atan((CentrePointParticleJ(1) - CentrePointParticleI(1)) / (CentrePointParticleJ(0) - CentrePointParticleI(0)))
-                        If Angle1 < 0 Then
-                            Angle1 = Angle1 * -1
+                        Dim DegreesAngle As Double = Math.Atan((CentrePointParticleJ(1) - CentrePointParticleI(1)) / (CentrePointParticleJ(0) - CentrePointParticleI(0)))
+                        If DegreesAngle < 0 Then
+                            DegreesAngle = DegreesAngle * -1
                         End If
-                        Console.WriteLine("Angle: " + (Angle1 * (180 / System.Math.PI)).ToString)
+                        Console.WriteLine("DegreesAngle: " + (DegreesAngle * (180 / System.Math.PI)).ToString)
 
                         Dim CollisionPoint(1) As Integer
 
-                        CollisionPoint(0) = ((ParticleSize / 2) * Math.Cos(Angle1))
-                        CollisionPoint(1) = ((ParticleSize / 2) * Math.Sin(Angle1))
+                        CollisionPoint(0) = ((ParticleSize / 2) * Math.Cos(DegreesAngle))
+                        CollisionPoint(1) = ((ParticleSize / 2) * Math.Sin(DegreesAngle))
 
-                        Console.WriteLine("Collision Point: " + CollisionPoint(0).ToString + ", " + CollisionPoint(1).ToString)
+                        Dim angle As Double = (Math.Atan2(Math.Abs(XVelocity(i + j)), -(Math.Abs(YVelocity(i + j))))) * (180 / Math.PI)
 
-                        e.Graphics.DrawEllipse(RedPen, (CentrePointParticleJ(0) + CollisionPoint(0)), (CentrePointParticleJ(1) - CollisionPoint(1)), 1, 1)
+                        If angle = 180 Or angle = 90 Or angle = 270 Or angle = 0 Then
+                            Console.WriteLine("90/180/270: " + angle.ToString)
+                        ElseIf angle > 0 And angle < 90 Then
+                            e.Graphics.DrawEllipse(RedPen, (CentrePointParticleJ(0) + CollisionPoint(0)), (CentrePointParticleJ(1) - CollisionPoint(1)), 1, 1) 'red
+                            Console.WriteLine("0 - 90: " + angle.ToString)
+                            Console.WriteLine("Centre Point: (" + (CentrePointParticleJ(0) + CollisionPoint(0)).ToString + ", " + (CentrePointParticleJ(1) - CollisionPoint(1)).ToString + ")")
+                        ElseIf angle > 90 And angle < 180 Then
+                            e.Graphics.DrawEllipse(PurplePen, (CentrePointParticleJ(0) + CollisionPoint(0)), (CentrePointParticleJ(1) + CollisionPoint(1)), 1, 1) 'purple
+                            Console.WriteLine("90 - 180: " + angle.ToString)
+                            Console.WriteLine("Centre Point: (" + (CentrePointParticleJ(0) + CollisionPoint(0)).ToString + ", " + (CentrePointParticleJ(1) + CollisionPoint(1)).ToString + ")")
+                        ElseIf angle > 180 And angle < 270 Then
+                            e.Graphics.DrawEllipse(BluePen, (CentrePointParticleJ(0) - CollisionPoint(0)), (CentrePointParticleJ(1) + CollisionPoint(1)), 1, 1) 'blue
+                            Console.WriteLine("180 - 270: " + angle.ToString)
+                            Console.WriteLine("Centre Point: (" + (CentrePointParticleJ(0) - CollisionPoint(0)).ToString + ", " + (CentrePointParticleJ(1) + CollisionPoint(1)).ToString + ")")
+                        ElseIf angle > 270 And angle < 360 Then
+                            e.Graphics.DrawEllipse(PinkPen, (CentrePointParticleJ(0) - CollisionPoint(0)), (CentrePointParticleJ(1) - CollisionPoint(1)), 1, 1) 'pink
+                            Console.WriteLine("270-360: " + angle.ToString)
+                            Console.WriteLine("Centre Point: (" + (CentrePointParticleJ(0) - CollisionPoint(0)).ToString + ", " + (CentrePointParticleJ(1) - CollisionPoint(1)).ToString + ")")
+                        End If
+
+                        Dim Gradient1 As Integer = (((ParticleCoord(i, 1) + (ParticleSize / 2)) - (ParticleCoord(i + j, 1) + (ParticleSize / 2))) / (((ParticleCoord(i + j, 0) + (ParticleSize / 2)) - ((ParticleCoord(i, 0) + (ParticleSize / 2))))))
+
+                        Console.WriteLine("Gradient: " + Gradient1.ToString)
 
                         Exit For
-                        Exit For
-                    End If
+                            Exit For
+                        End If
                 Next
             Next
         End If
